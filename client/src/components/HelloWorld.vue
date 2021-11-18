@@ -1,12 +1,17 @@
 <template>
   <v-container>
+    <v-row >
+      <v-col md-6>
+        <v-switch
+          v-model="nodeServer"
+          :label="`Сервер на: ${nodeServer? 'NodeJS': 'C#' }  `"
+        ></v-switch>
+      </v-col>
+    </v-row>
     <v-row class="justify-center">
       <v-col md="6" sm="12">
         <v-card class="pa-6">
-          <form
-            @submit.prevent="sendBook"
-         
-          >
+          <form @submit.prevent="sendBook">
             <v-text-field
               v-model="id"
               name="id"
@@ -37,7 +42,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "HelloWorld",
 
@@ -45,6 +50,7 @@ export default {
     id: null,
     name: null,
     author: null,
+    nodeServer: true,
   }),
   methods: {
     sendBook: async function () {
