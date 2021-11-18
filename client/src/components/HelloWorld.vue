@@ -62,7 +62,7 @@ export default {
       console.log(book);
       //запрос отправляется на адрес https://cubit-2021.appspot.com/api/insert
       await axios
-        .post("http://localhost:8080/api/insert-book", book)
+        .post( this.nodeServer? "http://localhost:3000/sendBook": "http://localhost:8080/api/insert-book", book)
         .then((response) => console.log(response.data))
         .catch((error) => {
           this.errorMessage = error.message;
