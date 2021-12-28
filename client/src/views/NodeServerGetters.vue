@@ -15,7 +15,7 @@ export default {
     // send request to get all books
     getAllBooks: function () {
       axios
-        .get("http://localhost:3000/books/get-all")
+        .get("http://localhost:3000/api/books/get-all")
         .then((response) => console.log(response))
         .catch((error) => {
           // this.errorMessage = error.message;

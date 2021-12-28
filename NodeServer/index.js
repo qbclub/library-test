@@ -4,7 +4,7 @@ var cors = require('cors')
 
 
 let mongoClient = require('mongodb').MongoClient
-let url = "mongodb://AdminMongo:QbitMongo@grif-qbit.duckdns.org:27017/"
+const { url } = require('./password')
 
 let database;
 
@@ -38,7 +38,7 @@ app.post('/sendBook', function (request, response) {
     // });
 })
 // listen to get all books
-app.get('/books/get-all', function (request, response) {
+app.get('/api/books/get-all', function (request, response) {
     console.log(request.body)
     // send all books
     let books = database.collection("books")
