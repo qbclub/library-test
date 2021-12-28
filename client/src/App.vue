@@ -3,7 +3,7 @@
     <v-app-bar app class="d-flex justify-center">
       |<router-link to="/">Home</router-link>| |
       <router-link to="/about">About</router-link>| |
-      <router-link to="/node-getters">node-getters</router-link>|
+      <router-link to="/node-methods">node-methods</router-link>|
     </v-app-bar>
 
     <v-main>

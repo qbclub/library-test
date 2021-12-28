@@ -1,17 +1,14 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col md-6>
-        <v-switch
-          v-model="nodeServer"
-          :label="`Сервер на: ${nodeServer ? 'NodeJS' : 'C#'}  `"
-        ></v-switch>
-      </v-col>
-    </v-row>
+    <v-row class="justify-center"
+      ><v-col cols="6" class="text-center">
+        <v-btn @click="getAllBooks">get All Books</v-btn>
+      </v-col></v-row
+    >
     <v-row class="justify-center">
       <v-col md="6" sm="12">
         <v-card class="pa-6">
-          <form @submit.prevent="sendBook">
+          <form @submit.prevent="createBook">
             <v-text-field
               v-model="id"
               name="id"
@@ -43,17 +40,27 @@
 
 <script>
 import axios from "axios";
+import HelloWorld from "../components/HelloWorld.vue";
 export default {
-  name: "HelloWorld",
-
+  name: "NodeServerMethods",
   data: () => ({
     id: null,
     name: null,
     author: null,
-    nodeServer: true,
   }),
+  components: { HelloWorld },
   methods: {
-    sendBook: async function () {
+    // send request to get all books
+    getAllBooks: function () {
+      axios
+        .get("http://localhost:3000/api/books/get-all")
+        .then((response) => console.log(response))
+        .catch((error) => {
+          // this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
+    },
+    createBook: async function () {
       const book = {
         id: this.id,
         name: this.name,
@@ -62,12 +69,7 @@ export default {
       console.log(book);
       //запрос отправляется на адрес https://cubit-2021.appspot.com/api/insert
       await axios
-        .post(
-          this.nodeServer
-            ? "http://localhost:3000/api/sendBook"
-            : "http://localhost:8080/api/insert-book",
-          book
-        )
+        .post("http://localhost:3000/api/books/create", book)
         .then((response) => console.log(response))
         .catch((error) => {
           this.errorMessage = error.message;
@@ -77,3 +79,6 @@ export default {
   },
 };
 </script>
+
+<style>
+</style>

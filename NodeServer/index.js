@@ -21,22 +21,22 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 
-app.post('/sendBook', function (request, response) {
-    let books = database.collection("books")
-    // console.log(books)
-    // console.log(request.body)
+// app.post('/sendBook', function (request, response) {
+//     let books = database.collection("books")
+//     // console.log(books)
+//     // console.log(request.body)
 
-    books.insertOne({
-        id: request.body.id,
-        name: request.body.name,
-        author: request.body.author
-    })
+//     books.insertOne({
+//         id: request.body.id,
+//         name: request.body.name,
+//         author: request.body.author
+//     })
 
-    // books.find().toArray(function (err, documents) {
-    //     response.send(JSON.stringify(documents));
-    //     console.log(JSON.stringify(documents))
-    // });
-})
+//     // books.find().toArray(function (err, documents) {
+//     //     response.send(JSON.stringify(documents));
+//     //     console.log(JSON.stringify(documents))
+//     // });
+// })
 // listen to get all books
 app.get('/api/books/get-all', function (request, response) {
     console.log(request.body)
@@ -49,6 +49,15 @@ app.get('/api/books/get-all', function (request, response) {
     });
 })
 
-
+app.post('/api/books/create', function (request, response) {
+    // let books = database.collection("books")
+    console.log(request.body)
+    // response.send()
+    // books.insertOne({
+    //     id: request.body.id,
+    //     name: request.body.name,
+    //     author: request.body.author
+    // })
+})
 
 app.listen(3000)

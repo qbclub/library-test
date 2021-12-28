@@ -16,9 +16,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/node-getters',
-    name: 'NodeServerGetters',
-    component: () => import(/* webpackChunkName: "about" */ '../views/NodeServerGetters.vue')
+    path: '/node-methods',
+    name: 'NodeServerMethods',
+    component: () => import(/* webpackChunkName: "about" */ '../views/NodeServerMethods.vue')
   }
 
 ]
