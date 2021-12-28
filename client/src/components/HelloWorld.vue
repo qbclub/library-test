@@ -1,10 +1,10 @@
 <template>
   <v-container>
-    <v-row >
+    <v-row>
       <v-col md-6>
         <v-switch
           v-model="nodeServer"
-          :label="`Сервер на: ${nodeServer? 'NodeJS': 'C#' }  `"
+          :label="`Сервер на: ${nodeServer ? 'NodeJS' : 'C#'}  `"
         ></v-switch>
       </v-col>
     </v-row>
@@ -62,8 +62,13 @@ export default {
       console.log(book);
       //запрос отправляется на адрес https://cubit-2021.appspot.com/api/insert
       await axios
-        .post( this.nodeServer? "http://localhost:3000/sendBook": "http://localhost:8080/api/insert-book", book)
-        .then((response) => console.log(response.data))
+        .post(
+          this.nodeServer
+            ? "http://localhost:3000/sendBook"
+            : "http://localhost:8080/api/insert-book",
+          book
+        )
+        .then((response) => console.log(response))
         .catch((error) => {
           this.errorMessage = error.message;
           console.error("There was an error!", error);
