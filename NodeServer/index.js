@@ -7,9 +7,9 @@ let mongoClient = require('mongodb').MongoClient
 const { url } = require('./password')
 
 let database;
-
-mongoClient.connect(url, function (err, client) {
-    database = client.db("libraryFromNode")
+mongoClient.connect(url, async function (err, client) {
+    database = await client.db("libraryFromNode")
+    console.log('mongo connected')
 })
 
 
@@ -50,14 +50,39 @@ app.get('/api/books/get-all', function (request, response) {
 })
 
 app.post('/api/books/create', function (request, response) {
-    // let books = database.collection("books")
+    let books = database.collection("books")
+    console.log('Create book: ', request.body)
+
+    try {
+        books.insertOne({
+            id: request.body.id,
+            name: request.body.name,
+            author: request.body.author
+        })
+        response.send('OK')
+    } catch (err) {
+        console.error(err)
+    }
+})
+
+app.get('/api/bookflow/get-all', function (request, response) {
     console.log(request.body)
-    // response.send()
-    // books.insertOne({
-    //     id: request.body.id,
-    //     name: request.body.name,
-    //     author: request.body.author
-    // })
+    let bookflow = database.collection("bookflow")
+    bookflow.find().toArray(function (err, documents) {
+        response.send(JSON.stringify(documents));
+        console.log(JSON.stringify(documents))
+    });
+})
+
+app.post('/api/bookflow/create', function (request, response) {
+    let bookflow = database.collection("bookflow")
+    console.log(request.body)
+    try {
+        bookflow.insertOne(request.body)
+        response.send('OK')
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 app.listen(3000)
