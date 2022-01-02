@@ -104,6 +104,23 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row class="justify-center">
+      <v-col md="6" sm="12">
+        <v-card class="pa-6">
+          get book by id
+          <form @submit.prevent="getBookById">
+            <v-text-field
+              v-model="bookIdToFind"
+              name="id"
+              label="id"
+              required
+            ></v-text-field>
+
+            <v-btn class="m-4 primary" type="submit"> отправить </v-btn>
+          </form>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -118,6 +135,7 @@ export default {
       name: null,
       author: null,
     },
+    bookIdToFind: null,
     bookflow: {
       BookId: null,
       UserId: null,
@@ -142,6 +160,15 @@ export default {
         .then((response) => console.log(response))
         .catch((error) => {
           // this.errorMessage = error.message;
+          console.error("There was an error!", error);
+        });
+    },
+    getBookById: function () {
+      let id = this.bookIdToFind;
+      axios
+        .get(`http://localhost:3000/api/books?id=${id}`)
+        .then((response) => console.log(response))
+        .catch((error) => {
           console.error("There was an error!", error);
         });
     },

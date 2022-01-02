@@ -49,6 +49,17 @@ app.get('/api/books/get-all', function (request, response) {
     });
 })
 
+app.get('/api/books', function (request, response) {
+    // console.log(request.query)
+    const bookId = request.query.id;
+    let books = database.collection("books")
+
+    books.find({ id: bookId }).toArray(function (err, documents) {
+        response.send(JSON.stringify(documents));
+        console.log(JSON.stringify(documents))
+    })
+})
+
 app.post('/api/books/create', async function (request, response) {
     let books = database.collection("books")
     console.log('Create book: ', request.body)
@@ -131,7 +142,7 @@ app.post('/api/users/create', async function (request, response) {
 })
 
 app.get('/api/users/clear', function (request, response) {
-    let users = database.collection("bookflow")
+    let users = database.collection("users")
     try {
         users.deleteMany({})
         users.find().toArray(function (err, documents) {
