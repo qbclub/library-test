@@ -43,7 +43,7 @@ app.get('/api/books/get-all', function (request, response) {
     // send all books
     let books = database.collection("books")
 
-    books.find().toArray(function (err, documents) {
+    books.find({}).toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
         console.log(JSON.stringify(documents))
     });
@@ -62,14 +62,11 @@ app.get('/api/books', function (request, response) {
 
 app.post('/api/books/create', async function (request, response) {
     let books = database.collection("books")
-    console.log('Create book: ', request.body)
+    let book = request.body;
+    console.log('Create book:\n', book)
 
     try {
-        await books.insertOne({
-            id: request.body.id,
-            name: request.body.name,
-            author: request.body.author
-        })
+        await books.insertOne(book)
         response.send('OK')
     } catch (err) {
         console.error(err)
