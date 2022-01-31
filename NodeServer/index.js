@@ -151,4 +151,16 @@ app.get('/api/users/clear', function (request, response) {
     }
 })
 
+app.put('/api/users/update', async function (request, response) {
+    let users = database.collection("users");
+    let user = request.body;
+    console.log("Update user: ", user)
+    try {
+        let result = await users.updateOne({ UserId: user.UserId }, { $set: user }, { upsert: true });
+        console.log("Result: ", result)
+    } catch (err) {
+        console.error(err)
+    }
+})
+
 app.listen(3000)
