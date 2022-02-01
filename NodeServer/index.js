@@ -154,10 +154,15 @@ app.get('/api/users/clear', function (request, response) {
 app.put('/api/users/update', async function (request, response) {
     let users = database.collection("users");
     let user = request.body;
-    console.log("Update user: ", user)
+    let Email = user.Contacts.Email;
+    console.log(Email);
+    /**
+     * Добавить проверку наличия пользователя
+     */
     try {
-        let result = await users.updateOne({ UserId: user.UserId }, { $set: user }, { upsert: true });
-        console.log("Result: ", result)
+        let result = await users.updateOne({ "Contacts.Email": { $eq: Email } }, { $set: user }, { upsert: false })
+        console.log('Новый пользователь: ', user)
+        console.log('Результат: ', result)
     } catch (err) {
         console.error(err)
     }
