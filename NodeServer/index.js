@@ -4,7 +4,8 @@ var cors = require('cors')
 
 
 let mongoClient = require('mongodb').MongoClient
-const { url } = require('./password')
+const { url } = require('./password');
+const { response } = require('express');
 
 let database;
 mongoClient.connect(url, function (err, client) {
@@ -166,6 +167,17 @@ app.put('/api/users/update', async function (request, response) {
     } catch (err) {
         console.error(err)
     }
+})
+
+app.get('/api/users/get-by-email', async function (req, res) {
+    let users = database.collection("users");
+    let Email = req.query.email;
+
+    await users.findOne({ "Contacts.Email": { $eq: Email } }).then(function (user) {
+        console.log("fetched user: ", user)
+        res.send(user)
+    })
+    // console.log(user);
 })
 
 app.listen(3000)
