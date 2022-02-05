@@ -128,11 +128,11 @@ app.get('/api/users/get-all', function (request, response) {
     });
 })
 
-app.post('/api/users/create', async function (request, response) {
+app.post('/api/users/create',  function (request, response) {
     let users = database.collection("users")
     console.log(request.body)
     try {
-        await users.insertOne(request.body)
+         users.insertOne(request.body)
         response.send('OK')
     } catch (err) {
         console.error(err)
@@ -145,7 +145,7 @@ app.get('/api/users/clear', function (request, response) {
         users.deleteMany({})
         users.find().toArray(function (err, documents) {
             response.send(JSON.stringify(documents));
-            console.log(JSON.stringify(documents))
+            
         });
     } catch (err) {
         console.error(err)
