@@ -169,10 +169,9 @@ app.put('/api/users/update', async function (request, response) {
     }
 })
 
-app.get('/api/users/get-by-email', async function (req, res) {
+app.post('/api/users/get-by-email', async function (req, res) {
     let users = database.collection("users");
-    let Email = req.query.email;
-    console.log('Email: ', Email)
+    let Email = req.body.email;
 
     await users.findOne({ "Contacts.Email": { $eq: Email } }).then(function (user) {
         console.log("send user to client: ", user)
