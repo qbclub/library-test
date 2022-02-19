@@ -55,7 +55,7 @@ app.get('/api/books/get-all', function (request, response) {
 })
 
 app.get('/api/books', function (request, response) {
-    // console.log(request.query)
+  
     const bookId = request.query.id;
 
     books.find({
@@ -66,12 +66,12 @@ app.get('/api/books', function (request, response) {
     })
 })
 
-app.post('/api/books/create', async function (request, response) {
+app.post('/api/books/create', function (request, response) {
 
     let book = request.body;
 
     try {
-        await books.insertOne(book)
+        books.insertOne(book)
         response.send('OK')
     } catch (err) {
         console.error(err)
@@ -83,7 +83,7 @@ app.put('/api/books/update',  function (request, response) {
     let obj = request.body
 
     try {
-        let result =  books.updateOne(obj.query, {
+        books.updateOne(obj.query, {
             $set: obj.event
         }, {
             upsert: false
@@ -116,10 +116,10 @@ app.get('/api/bookflow/get-all', function (request, response) {
     });
 })
 
-app.post('/api/bookflow/create', async function (request, response) {
+app.post('/api/bookflow/create', function (request, response) {
 
     try {
-        await bookflow.insertOne(request.body)
+        bookflow.insertOne(request.body)
         response.send('OK')
     } catch (err) {
         console.error(err)
@@ -180,7 +180,7 @@ app.put('/api/users/update', function (request, response) {
      * Добавить проверку наличия пользователя
      */
     try {
-        let result =  users.updateOne({
+        users.updateOne({
             "Contacts.Email": {
                 $eq: Email
             }
