@@ -10,7 +10,7 @@ const {
     response
 } = require('express');
 
-const database;
+let database;
 mongoClient.connect(url, function (err, client) {
     database = client.db("libraryFromNode")
     console.log('mongo connected')
