@@ -81,12 +81,13 @@ app.post('/api/books/create', function (request, response) {
 
 app.put('/api/books/update', function (request, response) {
 
-    let obj = request.body
-
+    let setupOptions = request.body.setupOptions;
+    let id = request.body.id;
+    console.log(id, setupOptions)
     try {
-        books.updateOne(obj.query, {
-            $set: obj.event
-        }, {
+        books.updateOne({
+            'Id': { $eq: id }
+        }, setupOptions, {
             upsert: false
         })
 
@@ -159,7 +160,7 @@ app.post('/api/users/create', function (request, response) {
 })
 
 app.get('/api/users/clear', function (request, response) {
-
+    // { 'Contacts.Email': { $eq: 'grishadzyin@gmail.com' } }
     try {
         users.deleteMany({})
         users.find().toArray(function (err, documents) {
@@ -173,21 +174,22 @@ app.get('/api/users/clear', function (request, response) {
 
 app.put('/api/users/update', function (request, response) {
 
-    let user = request.body;
-    let Email = user.Contacts.Email;
-    let options = request.body.options;
+    let setupOptions = request.body.setupOptions;
+    let Email = request.body.email;
 
+    console.log(Email)
     /**
      * Добавить проверку наличия пользователя
      */
     try {
-        users.updateOne({
-            "Contacts.Email": {
-                $eq: Email
-            }
-        }, options, {
-            upsert: false
-        })
+        users.updateOne(
+            {
+                "Contacts.Email": {
+                    $eq: Email
+                }
+            },
+            setupOptions,
+            { upsert: false })
 
     } catch (err) {
         console.error(err)
