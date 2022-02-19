@@ -49,7 +49,6 @@ app.use(express.json())
 app.get('/api/books/get-all', function (request, response) {
 
     // send all books
-
     books.find({}).toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
     });
@@ -70,7 +69,6 @@ app.get('/api/books', function (request, response) {
 app.post('/api/books/create', async function (request, response) {
 
     let book = request.body;
-    console.log('Create book:\n', book)
 
     try {
         await books.insertOne(book)
@@ -80,18 +78,17 @@ app.post('/api/books/create', async function (request, response) {
     }
 })
 
-app.put('/api/books/update', async function (request, response) {
+app.put('/api/books/update',  function (request, response) {
 
     let obj = request.body
 
     try {
-        let result = await books.updateOne(obj.query, {
+        let result =  books.updateOne(obj.query, {
             $set: obj.event
         }, {
             upsert: false
         })
-        console.log('Новая книга: ', user)
-        console.log('Результат: ', result)
+       
     } catch (err) {
         console.error(err)
     }
@@ -121,7 +118,6 @@ app.get('/api/bookflow/get-all', function (request, response) {
 
 app.post('/api/bookflow/create', async function (request, response) {
 
-    console.log(request.body)
     try {
         await bookflow.insertOne(request.body)
         response.send('OK')
@@ -184,7 +180,7 @@ app.put('/api/users/update', function (request, response) {
      * Добавить проверку наличия пользователя
      */
     try {
-        let result = await users.updateOne({
+        let result =  users.updateOne({
             "Contacts.Email": {
                 $eq: Email
             }
