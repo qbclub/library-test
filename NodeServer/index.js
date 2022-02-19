@@ -10,15 +10,16 @@ const {
     response
 } = require('express');
 
-let database;
+let database, books, bookflow, users
 mongoClient.connect(url, function (err, client) {
     database = client.db("libraryFromNode")
+    books = database.collection("books")
+    bookflow = database.collection("bookflow")
+    users = database.collection("users")
     console.log('mongo connected')
 })
 
-const books = database.collection("books")
-const bookflow = database.collection("bookflow")
-const users = database.collection("users")
+
 
 
 const app = express()
@@ -55,7 +56,7 @@ app.get('/api/books/get-all', function (request, response) {
 })
 
 app.get('/api/books', function (request, response) {
-  
+
     const bookId = request.query.id;
 
     books.find({
@@ -78,7 +79,7 @@ app.post('/api/books/create', function (request, response) {
     }
 })
 
-app.put('/api/books/update',  function (request, response) {
+app.put('/api/books/update', function (request, response) {
 
     let obj = request.body
 
@@ -88,7 +89,7 @@ app.put('/api/books/update',  function (request, response) {
         }, {
             upsert: false
         })
-       
+
     } catch (err) {
         console.error(err)
     }
@@ -207,7 +208,7 @@ app.post('/api/users/get-by-email', function (req, res) {
     }).catch(function (err) {
         console.error(err)
     });
-    
+
 })
 
 app.listen(3000)
