@@ -10,9 +10,9 @@ const {
     response
 } = require('express');
 
-let database, books, bookflow, users
+let books, bookflow, users
 mongoClient.connect(url, function (err, client) {
-    database = client.db("libraryFromNode")
+    let database = client.db("libraryFromNode")
     books = database.collection("books")
     bookflow = database.collection("bookflow")
     users = database.collection("users")
