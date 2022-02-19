@@ -2,16 +2,23 @@ let express = require('express')
 var cors = require('cors')
 
 
-
 let mongoClient = require('mongodb').MongoClient
-const { url } = require('./password');
-const { response } = require('express');
+const {
+    url
+} = require('./password');
+const {
+    response
+} = require('express');
 
-let database;
+const database;
 mongoClient.connect(url, function (err, client) {
     database = client.db("libraryFromNode")
     console.log('mongo connected')
 })
+
+const books = database.collection("books")
+const bookflow = database.collection("bookflow")
+const users = database.collection("users")
 
 
 const app = express()
@@ -40,29 +47,28 @@ app.use(express.json())
 // })
 // listen to get all books
 app.get('/api/books/get-all', function (request, response) {
-    console.log(request.body)
+
     // send all books
-    let books = database.collection("books")
 
     books.find({}).toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
-
     });
 })
 
 app.get('/api/books', function (request, response) {
     // console.log(request.query)
     const bookId = request.query.id;
-    let books = database.collection("books")
 
-    books.find({ id: bookId }).toArray(function (err, documents) {
+    books.find({
+        id: bookId
+    }).toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
 
     })
 })
 
 app.post('/api/books/create', async function (request, response) {
-    let books = database.collection("books")
+
     let book = request.body;
     console.log('Create book:\n', book)
 
@@ -75,12 +81,15 @@ app.post('/api/books/create', async function (request, response) {
 })
 
 app.put('/api/books/update', async function (request, response) {
-    let books = database.collection("books")
 
     let obj = request.body
 
     try {
-        let result = await books.updateOne(obj.query, { $set: obj.event }, { upsert: false })
+        let result = await books.updateOne(obj.query, {
+            $set: obj.event
+        }, {
+            upsert: false
+        })
         console.log('Новая книга: ', user)
         console.log('Результат: ', result)
     } catch (err) {
@@ -89,7 +98,7 @@ app.put('/api/books/update', async function (request, response) {
 })
 
 app.get('/api/books/clear', function (request, response) {
-    let books = database.collection("books")
+
     try {
         books.deleteMany({})
         books.find().toArray(function (err, documents) {
@@ -103,7 +112,7 @@ app.get('/api/books/clear', function (request, response) {
 
 
 app.get('/api/bookflow/get-all', function (request, response) {
-    let bookflow = database.collection("bookflow")
+
     bookflow.find().toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
 
@@ -111,7 +120,7 @@ app.get('/api/bookflow/get-all', function (request, response) {
 })
 
 app.post('/api/bookflow/create', async function (request, response) {
-    let bookflow = database.collection("bookflow")
+
     console.log(request.body)
     try {
         await bookflow.insertOne(request.body)
@@ -122,7 +131,7 @@ app.post('/api/bookflow/create', async function (request, response) {
 })
 
 app.get('/api/bookflow/clear', function (request, response) {
-    let bookflow = database.collection("bookflow")
+
     try {
         bookflow.deleteMany({})
         bookflow.find().toArray(function (err, documents) {
@@ -135,7 +144,7 @@ app.get('/api/bookflow/clear', function (request, response) {
 })
 
 app.get('/api/users/get-all', function (request, response) {
-    let users = database.collection("users")
+
     users.find().toArray(function (err, documents) {
         response.send(JSON.stringify(documents));
 
@@ -143,8 +152,7 @@ app.get('/api/users/get-all', function (request, response) {
 })
 
 app.post('/api/users/create', function (request, response) {
-    let users = database.collection("users")
-    console.log(request.body)
+
     try {
         users.insertOne(request.body)
         response.send('OK')
@@ -154,7 +162,7 @@ app.post('/api/users/create', function (request, response) {
 })
 
 app.get('/api/users/clear', function (request, response) {
-    let users = database.collection("users")
+
     try {
         users.deleteMany({})
         users.find().toArray(function (err, documents) {
@@ -166,33 +174,44 @@ app.get('/api/users/clear', function (request, response) {
     }
 })
 
-app.put('/api/users/update', async function (request, response) {
-    let users = database.collection("users");
+app.put('/api/users/update', function (request, response) {
+
     let user = request.body;
     let Email = user.Contacts.Email;
     let options = request.body.options;
-    console.log(Email);
+
     /**
      * Добавить проверку наличия пользователя
      */
     try {
-        let result = await users.updateOne({ "Contacts.Email": { $eq: Email } }, options, { upsert: false })
-        console.log('Новый пользователь: ', user)
-        console.log('Результат: ', result)
+        let result = await users.updateOne({
+            "Contacts.Email": {
+                $eq: Email
+            }
+        }, options, {
+            upsert: false
+        })
+
     } catch (err) {
         console.error(err)
     }
 })
 
-app.post('/api/users/get-by-email', async function (req, res) {
-    let users = database.collection("users");
+app.post('/api/users/get-by-email', function (req, res) {
+
     let Email = req.body.email;
 
-    await users.findOne({ "Contacts.Email": { $eq: Email } }).then(function (user) {
+    users.findOne({
+        "Contacts.Email": {
+            $eq: Email
+        }
+    }).then(function (user) {
         console.log("send user to client: ", user)
         res.send(user)
-    }).catch(function (err) { console.error(err) });
-    // console.log(user);
+    }).catch(function (err) {
+        console.error(err)
+    });
+    
 })
 
 app.listen(3000)
