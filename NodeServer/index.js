@@ -177,7 +177,8 @@ app.put('/api/users/update', function (request, response) {
     let setupOptions = request.body.setupOptions;
     let Email = request.body.email;
 
-    console.log(Email)
+    console.log(request.body)
+    // return;
     /**
      * Добавить проверку наличия пользователя
      */
