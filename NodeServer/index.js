@@ -150,13 +150,13 @@ app.get('/api/users/get-all', function (request, response) {
 })
 
 app.post('/api/users/create', function (request, response) {
-
-    try {
-        users.insertOne(request.body)
+    users.insertOne(request.body).then((r) => {
+        console.log('user created', r)
         response.send('OK')
-    } catch (err) {
+    }).catch((err) => {
         console.error(err)
-    }
+        response.send(err)
+    })
 })
 
 app.get('/api/users/clear', function (request, response) {
@@ -189,9 +189,9 @@ app.put('/api/users/update', function (request, response) {
         },
         setupOptions,
         { upsert: false }
-    ).then(function (a) {
-        console.log('user succesfully updated')
-        response.send(a)
+    ).then(function (r) {
+        console.log('user succesfully updated', r)
+        response.send(r)
     }).catch(err => {
         console.error(err)
         response.send(err)
