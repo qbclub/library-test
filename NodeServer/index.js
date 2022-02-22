@@ -161,6 +161,7 @@ app.post('/api/users/create', function (request, response) {
 
 app.get('/api/users/clear', function (request, response) {
     // { 'Contacts.Email': { $eq: 'grishadzyin@gmail.com' } }
+    return;
     try {
         users.deleteMany({})
         users.find().toArray(function (err, documents) {
@@ -173,28 +174,28 @@ app.get('/api/users/clear', function (request, response) {
 })
 
 app.put('/api/users/update', function (request, response) {
-
     let setupOptions = request.body.setupOptions;
     let Email = request.body.email;
-
-    console.log(request.body)
     // return;
     /**
      * Добавить проверку наличия пользователя
      */
-    try {
-        users.updateOne(
-            {
-                "Contacts.Email": {
-                    $eq: Email
-                }
-            },
-            setupOptions,
-            { upsert: false })
 
-    } catch (err) {
+    users.updateOne(
+        {
+            "Contacts.Email": {
+                $eq: Email
+            }
+        },
+        setupOptions,
+        { upsert: false }
+    ).then(function (a) {
+        console.log('user succesfully updated')
+        response.send(a)
+    }).catch(err => {
         console.error(err)
-    }
+        response.send(err)
+    })
 })
 
 app.post('/api/users/get-by-email', function (req, res) {
