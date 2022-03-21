@@ -117,7 +117,7 @@ app.put('/api/books/change-state', function (req, res) {
         // UPDATE BOOK
         books.updateOne({
             'Id': { $eq: event.BookId }
-        }, { $set: { "Status": "Зарезервирована" } }, {
+        }, { $set: { "Status": "Зарезервирована", "ReservedQueue": event.UserEmail } }, {
             upsert: false
         }).then((r) => {
             console.log('update book ', r)
@@ -137,7 +137,7 @@ app.put('/api/books/change-state', function (req, res) {
         // UPDATE BOOK
         books.updateOne({
             'Id': { $eq: event.BookId }
-        }, { $set: { "Status": "Выдана" } }, {
+        }, { $set: { "Status": "Выдана", "TemporaryOwner": event.UserEmail, "DateOfGivenOut": event.TimeStamp } }, {
             upsert: false
         }).then((r) => {
             console.log('update book ', r)
