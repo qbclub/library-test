@@ -102,46 +102,68 @@ app.put('/api/books/change-state', function (req, res) {
     let event = req.body.e;
     console.log(req.body)
 
-    if (eventType == 'reserve' && (eventType != null || eventType != undefined)) {
-        // UPDATE USER
-        users.updateOne(
-            { "Contacts.Email": { $eq: event.UserEmail } },
-            { $set: { 'CurrentReservedBooks': event.BookId } },
-            { upsert: false }
-        ).then(function (r) {
-            console.log('user succesfully updated', r)
-        }).catch(err => {
-            console.error(err)
-        })
+    if (eventType != null || eventType != undefined) {
+        if (eventType == 'reserve') {
+            // UPDATE USER
+            users.updateOne(
+                { "Contacts.Email": { $eq: event.UserEmail } },
+                { $set: { 'CurrentReservedBooks': event.BookId } },
+                { upsert: false }
+            ).then(function (r) {
+                console.log('user succesfully updated', r)
+            }).catch(err => {
+                console.error(err)
+            })
 
-        // UPDATE BOOK
-        books.updateOne({
-            'Id': { $eq: event.BookId }
-        }, { $set: { "Status": "Зарезервирована", "ReservedQueue": event.UserEmail } }, {
-            upsert: false
-        }).then((r) => {
-            console.log('update book ', r)
-        }).catch((err) => { console.error(err) })
-    } else {
-        // UPDATE USER
-        users.updateOne(
-            { "Contacts.Email": { $eq: event.UserEmail } },
-            { $set: { 'CurrentTakenBooks': event.BookId } },
-            { upsert: false }
-        ).then(function (r) {
-            console.log('user succesfully updated', r)
-        }).catch(err => {
-            console.error(err)
-        })
+            // UPDATE BOOK
+            books.updateOne({
+                'Id': { $eq: event.BookId }
+            }, { $set: { "Status": event.BookStatus, "ReservedQueue": event.UserEmail } }, {
+                upsert: false
+            }).then((r) => {
+                console.log('update book ', r)
+            }).catch((err) => { console.error(err) })
+        } else if (eventType == 'give') {
+            // UPDATE USER
+            users.updateOne(
+                { "Contacts.Email": { $eq: event.UserEmail } },
+                { $set: { 'CurrentTakenBooks': event.BookId } },
+                { upsert: false }
+            ).then(function (r) {
+                console.log('user succesfully updated', r)
+            }).catch(err => {
+                console.error(err)
+            })
 
-        // UPDATE BOOK
-        books.updateOne({
-            'Id': { $eq: event.BookId }
-        }, { $set: { "Status": "Выдана", "TemporaryOwner": event.UserEmail, "DateOfGivenOut": event.TimeStamp } }, {
-            upsert: false
-        }).then((r) => {
-            console.log('update book ', r)
-        }).catch((err) => { console.error(err) })
+            // UPDATE BOOK
+            books.updateOne({
+                'Id': { $eq: event.BookId }
+            }, { $set: { "Status": event.BookStatus, "TemporaryOwner": event.UserEmail, "DateOfGivenOut": event.TimeStamp } }, {
+                upsert: false
+            }).then((r) => {
+                console.log('update book ', r)
+            }).catch((err) => { console.error(err) })
+        } else if (eventType == 'return') {
+            // UPDATE USER
+            users.updateOne(
+                { "Contacts.Email": { $eq: event.UserEmail } },
+                { $set: { 'CurrentTakenBooks': '' } },
+                { upsert: false }
+            ).then(function (r) {
+                console.log('user succesfully updated', r)
+            }).catch(err => {
+                console.error(err)
+            })
+
+            // UPDATE BOOK
+            books.updateOne({
+                'Id': { $eq: event.BookId }
+            }, { $set: { "Status": event.BookStatus, "TemporaryOwner": '', "DateOfGivenOut": '', "ReservedQueue": '' } }, {
+                upsert: false
+            }).then((r) => {
+                console.log('update book ', r)
+            }).catch((err) => { console.error(err) })
+        }
     }
 
     // CREATE BOOKFLOW
