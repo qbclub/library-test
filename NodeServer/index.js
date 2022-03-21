@@ -9,6 +9,7 @@ const {
 const {
     response
 } = require('express');
+const e = require('express');
 
 let books, bookflow, users
 mongoClient.connect(url, function (err, client) {
@@ -94,6 +95,60 @@ app.put('/api/books/update', function (request, response) {
     } catch (err) {
         console.error(err)
     }
+})
+
+app.put('/api/books/change-state', function (req, res) {
+    let eventType = req.body.eventType;
+    let event = req.body.e;
+    console.log(req.body)
+
+    if (eventType == 'reserve' && (eventType != null || eventType != undefined)) {
+        // UPDATE USER
+        users.updateOne(
+            { "Contacts.Email": { $eq: event.UserEmail } },
+            { $set: { 'CurrentReservedBooks': event.BookId } },
+            { upsert: false }
+        ).then(function (r) {
+            console.log('user succesfully updated', r)
+        }).catch(err => {
+            console.error(err)
+        })
+
+        // UPDATE BOOK
+        books.updateOne({
+            'Id': { $eq: event.BookId }
+        }, { $set: { "Status": "Зарезервирована" } }, {
+            upsert: false
+        }).then((r) => {
+            console.log('update book ', r)
+        }).catch((err) => { console.error(err) })
+    } else {
+        // UPDATE USER
+        users.updateOne(
+            { "Contacts.Email": { $eq: event.UserEmail } },
+            { $set: { 'CurrentTakenBooks': event.BookId } },
+            { upsert: false }
+        ).then(function (r) {
+            console.log('user succesfully updated', r)
+        }).catch(err => {
+            console.error(err)
+        })
+
+        // UPDATE BOOK
+        books.updateOne({
+            'Id': { $eq: event.BookId }
+        }, { $set: { "Status": "Выдана" } }, {
+            upsert: false
+        }).then((r) => {
+            console.log('update book ', r)
+        }).catch((err) => { console.error(err) })
+    }
+
+    // CREATE BOOKFLOW
+    bookflow.insertOne(event)
+        .then((r) => { console.log('create bookflow e ', r) })
+        .catch((err) => { console.error(err) })
+
 })
 
 app.get('/api/books/clear', function (request, response) {
