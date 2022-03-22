@@ -57,9 +57,11 @@ app.get('/api/books/get-all', function (request, response) {
 })
 
 app.post('/api/books/delete-by-id', function (request, response) {
-    books.deleteOne({ Id: { $eq: request.body.id } })
-        .then((r) => console.log(r))
-        .catch((err) => console.error(err))
+    let id = request.body.id
+
+    books.deleteOne({ Id: { $eq: id } })
+        .then((r) => console.log(`Delete book with Id ${id} `, r))
+        .catch((err) => console.error('Cannot delete book with error', err))
 })
 
 app.get('/api/books', function (request, response) {
