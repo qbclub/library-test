@@ -56,6 +56,12 @@ app.get('/api/books/get-all', function (request, response) {
     });
 })
 
+app.post('/api/books/delete-by-id', function (request, response) {
+    books.deleteOne({ Id: { $eq: request.body.id } })
+        .then((r) => console.log(r))
+        .catch((err) => console.error(err))
+})
+
 app.get('/api/books', function (request, response) {
 
     const bookId = request.query.id;
